@@ -1,0 +1,71 @@
+<h1>Burgers</h1>
+
+<h2>Here is a list of all the burgers that have not been eaten.</h2>
+
+<ul>
+  {{#each burgers}}
+        {{#unless devoured}}
+        <li>
+
+      <p>Burger Name: {{burger_name}}</p>
+       <p>has it been eaten?: {{devoured}}</p>
+    
+    	<form action="/api/burgers/{{this.id}}?_method=PUT" method="POST">
+				<input type="hidden" name="devoured" value="true">
+				<button type="submit">Eat it!</button>
+			</form>
+
+    </li>
+        {{/unless}}
+
+  {{/each}}
+</ul>
+
+
+<h2>Here is a list of all the burgers that have been eaten.</h2>
+<ul>
+
+
+  {{#each burgers}}
+        {{#if devoured}}
+        <li>
+
+      <p>Burger Name: {{burger_name}}</p>
+       <p>has it been eaten?: {{devoured}}</p>
+
+ </li>
+
+        {{/if}}
+   
+  {{/each}}
+</ul>
+
+
+
+
+{{!-- <h2>Cats that are sleepy!</h2>
+
+<ul>
+  {{#each cats}}
+    {{#if sleepy}}
+      {{> cats/cat-block sleep=false}}
+    {{/if}}
+  {{/each}}
+</ul>
+
+<h2>Add a Cat</h2>
+<form class="create-form">
+
+  <div class="form-group">
+    <label for="ca">Cat Name:</label>
+    <input type="text" id="ca" name="name">
+  </div>
+
+  <div class="form-group">
+    <label for="sleepy">Sleepy?</label><br>
+    <input type="radio" name="sleepy" value="1" checked> Sleepy!<br>
+    <input type="radio" name="sleepy" value="0"> Awake
+  </div>
+
+  <button type="submit">Add Cat</button>
+</form> --}}
