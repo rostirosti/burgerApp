@@ -1,7 +1,27 @@
 // Import MySQL connection.
 const connection = require('../config/connection.js');
 
-// Object for all our SQL statement functions.
+// extra function to help with the way I am doing the SQL query
+const sqlObj = (ob) => {
+  let arr = [];
+
+  for (let key in ob) {
+      let value = ob[key];
+    
+      if (Object.hasOwnProperty.call(ob, key)) {
+       
+          if (typeof value === "string" && value.indexOf(" ") >= 0) {
+              value = "'" + value + "'";
+          }
+
+          arr.push(key + "=" + value);
+      }
+  }
+
+  return arr.toString();
+}
+
+
 const orm = {
   all: function(tableInput, cb) {
     connection.query('SELECT * FROM ??', tableInput, function(err, result) {
@@ -11,62 +31,38 @@ const orm = {
       cb(result);
     });
   },
-//   create: function(table, cols, vals, cb) {
-//     const queryString = 'INSERT INTO ?? (??) VALUES (?)'
-
-//     connection.query(queryString, [table, cols, vals], function(err, result) {
-//       if (err) {
-//         throw err;
-//       }
-
-//       cb(result);
-//     });
-//   },
-//   // An example of objColVals would be {name: panther, sleepy: true}
-
-// var updateStock = function () {
-//   console.log("Updating all quantities...\n");
-//   let query = connection.query(
-//       "UPDATE products SET ? WHERE ?",
-//       [{
-//               stock_quantity: quant_num
-//           },
-//           {
-//               item_id: prod_id
-//           }
-//       ],
-//       function (err, res) {
-//           console.log(res.affectedRows + " row updated!\n");
-
-//       }
-//   );
-
-// }
 
 
-  update: function(table, objColVals, condition, cb) {
-    const queryString = 'UPDATE ? SET ? WHERE ?'
+  create: function(table, cols, vals, cb) {
+    const queryString = 'INSERT INTO ?? (??) VALUES (?)'
 
-    connection.query(queryString, [table, objColVals, condition], function(err, result) {
+    connection.query(queryString, [table, cols, vals], function(err, result) {
       if (err) {
         throw err;
       }
-
+      console.log(queryString);
       cb(result);
     });
   },
-//   delete: function(table, condition, cb) {
-//     var queryString = "DELETE FROM ?? WHERE ?";
 
-//     connection.query(queryString, [table, condition], function(err, result) {
-//       if (err) {
-//         throw err;
-//       }
 
-//       cb(result);
-//     });
-//   }
-};
+update: (table, objColVals, condition, callback) => {
+  let queryString = "UPDATE " + table;
 
-// Export the orm object for the model (cat.js).
+  queryString += " SET ";
+  queryString += sqlObj(objColVals);
+  queryString += " WHERE ";
+  queryString += condition;
+  console.log(queryString);
+  connection.query(queryString, (err, results) => {
+      if (err) throw err;
+
+      callback(results);
+      
+  });
+}
+
+}
+
+
 module.exports = orm;
