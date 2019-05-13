@@ -17,26 +17,27 @@ router.get('/', function(req, res) {
 });
 
 router.put("/api/burgers/:id", function(req, res) {
-  const condition = {id: req.params.id}
+  const condition = "id = " + req.params.id;
 
   console.log('condition', condition);
 
   // sleepy is sent as a string to our server
   // convert it to a boolean before passing it to the database
-  let devd;
-  if (req.body.devoured === 'true') {
-    devd = true;
-  } else {
-    devd = false;
-  }
+  // let devd;
+  // if (req.body.devoured === 'true') {
+  //   devd = true;
+  // } else {
+  //   devd = false;
+  // }
 
   burger.update({
-    devoured: "true"
+    devoured: req.body.devoured
   }, condition, function(result) {
     if (result.changedRows == 0) {
       // If no rows were changed, then the ID must not exist, so 404
       return res.status(404).end();
     } else {
+      res.redirect("/")
       res.status(200).end();
     }
   });
@@ -50,7 +51,6 @@ router.post('/api/burgers', function(req, res) {
     res.redirect("/");
   });
 });
-
 
 
 module.exports = router;
